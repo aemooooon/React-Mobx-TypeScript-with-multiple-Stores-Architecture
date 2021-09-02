@@ -1,33 +1,38 @@
-import { makeAutoObservable } from 'mobx';
+import { action, makeAutoObservable, observable, runInAction } from 'mobx';
 import { getProducts } from '../api/productApi';
 
-export interface ProductProp {
-    id: number;
-    title: string;
-    price: number;
-    description: string;
-    image: string;
+export interface Product {
+    id: number
+    title: string
+    price: number
+    description: string
+    image: string
 }
 
-interface ProductStore {
-    [key: string]: any;
-}
-
-class ProductStore {
-    products: ProductProp[] = [];
+export class ProductStore {
+    products: Product[] = [];
+    isLoading: boolean = true;
 
     constructor() {
-        makeAutoObservable(this);
+        makeAutoObservable(this, {
+            products: observable,
+            isLoading: observable,
+            loadProducts: action,
+        });
     }
 
     loadProducts(): void {
-        getProducts().then((products: any) => this.products = products)
+        this.isLoading = true
+        getProducts().then((products: any) => {
+            runInAction(() => {
+                this.products = products;
+                this.isLoading = false;
+            })
+        })
     }
 
-    get len(): number{
+    get len(): number {
         return this.products.length
     }
 
 }
-
-export default ProductStore

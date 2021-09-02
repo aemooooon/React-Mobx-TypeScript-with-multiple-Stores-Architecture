@@ -19,3 +19,11 @@
   transform: translateY(1rem);
   cursor: pointer;
 }
+
+.spin-box{
+  width: 100%;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

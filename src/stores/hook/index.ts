@@ -1,6 +1,6 @@
 import React from 'react'
-import ProductStore from '../product'
-import UserStore from '../user';
+import { ProductStore } from '../product'
+import { UserStore } from '../user';
 import RootStore from '../root';
 import { StoreContext as storeContext } from '../../stores'
 

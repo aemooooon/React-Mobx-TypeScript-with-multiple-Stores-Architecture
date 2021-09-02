@@ -1,20 +1,14 @@
 import { makeAutoObservable } from "mobx";
-import ProductStore from "../product";
-import UserStore from "../user";
+import { ProductStore } from "../product";
+import { UserStore } from "../user";
 
-interface RootStore{
-    [key:string]:any;
-}
+export default class RootStore {
+    productStore: ProductStore;
+    userStore: UserStore;
 
-class RootStore{
-    productStore: ProductStore | null = null;
-    userStore: UserStore | null = null;
-
-    constructor(){
+    constructor() {
         makeAutoObservable(this);
         this.productStore = new ProductStore();
         this.userStore = new UserStore();
     }
 }
-
-export default RootStore;

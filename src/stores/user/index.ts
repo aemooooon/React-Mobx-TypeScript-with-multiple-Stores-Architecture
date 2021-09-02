@@ -1,17 +1,17 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, observable, action, runInAction } from 'mobx';
 import { getUsers } from '../api/userApi';
 
-type Name={
+export interface Name {
     firstname: string;
     lastname: string;
 }
 
-type Geolocation ={
+export interface Geolocation {
     lat: string;
     long: string;
 }
 
-type Address={
+export interface Address {
     geolocation: Geolocation;
     city: string;
     street: string;
@@ -19,7 +19,7 @@ type Address={
     zipcode: string;
 }
 
-export interface UserProp{
+export interface User {
     id: number;
     email: string;
     username: string;
@@ -29,17 +29,34 @@ export interface UserProp{
     address: Address;
 }
 
-class UserStore{
-    users: UserProp[] = [];
+export class UserStore {
+    users: User[] = [];
+    isLoading: boolean = true;
 
-    constructor(){
-        makeAutoObservable(this);
+    constructor() {
+        makeAutoObservable(this, {
+            users: observable,
+            loadUsers: action,
+            addUser: action,
+        });
     }
 
-    loadUsers(): void{
-        getUsers().then((users:any) => this.users = users);
+    loadUsers(): void {
+        this.isLoading = true;
+        getUsers().then((users: any) => {
+            runInAction(() => {
+                this.users = users;
+                this.isLoading = false;
+            })
+        });
+    }
+
+    get len(): number {
+        return this.users.length
+    }
+
+    addUser(user: User): void {
+        this.users.push(user)
     }
 
 }
-
-export default UserStore;
